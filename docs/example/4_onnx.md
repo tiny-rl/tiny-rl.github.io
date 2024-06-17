@@ -1,5 +1,5 @@
 # <center>Creating a ONNX model</center>
-To continue our tiny rl journey, we will need to make this model compatible with the embedded microcontroller. This requires us to convert the PyTorch {cite}`ONNX` model to an ONNX {cite}`ONNX` model.  
+To continue our tiny rl journey, we will need to make this model compatible with the embedded microcontroller. This requires us to convert the [PyTorch](https://pytorch.org) model to an [ONNX](https://onnx.ai/) model. {cite}`onnx`
 
 The conversion code looks like this:
 ```python
