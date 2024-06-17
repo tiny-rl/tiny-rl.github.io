@@ -1,6 +1,5 @@
-# Welcome to your Jupyter Book
+# <center> Introduction tiny-rl </center>
+Tiny-rl aims to provide an end-to-end customizable and modular compression framework {cite}`qpd_2022` for reinforcement learning algorithms.  
+End-to-end means that we start from a computer trained algorithm like a DQN trained for the Cart-Pole environment and ends with a mobile neural network compatible with an embedded device such as an ESP32. The compression framework is based on policy distillation and network quantization. This means that we will first teach a smaller neural network (the student) the policy of a bigger policy network (the teacher) and lower the precision of the weights without compromising the accuracy.  
 
-test 2
-
-```{tableofcontents}
-```
+Tiny-rl also needs to be compatible with multiple rl frameworks. This gives the need for a modular code base. Currently only stable-baselines is supported but in the future other frameworks will follow.

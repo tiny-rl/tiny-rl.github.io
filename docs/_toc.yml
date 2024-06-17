@@ -3,8 +3,22 @@
 
 format: jb-book
 root: intro
+
 chapters:
-- file: markdown
-- file: notebooks
-- file: markdown-notebooks
-- file: mymarkdownfile
+    - file: example/1_example
+      title: ESP32 cartpole example
+      sections:
+        - file: example/2_smaller_network
+          title: Creating a smaller network 
+        - file: example/3_distillation_config
+          title: Configuring the framework
+        - file: example/3_distillation
+          title: Transfering policy
+        - file: example/4_onnx
+          title: Creating a onnx model
+        - file: example/5_convert_to_c
+          title: Converting to C code
+        - file: example/6_usage
+          title: Usage
+    - file: references
+      title: References
