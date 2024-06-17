@@ -13,5 +13,5 @@ First step is setup your development environment. This can be done in two ways:
 Secondly, you need to [install the library](https://github.com/kraiskil/onnx2c) that converts the onnx model to C code with the following command: 
 ```sh
 ./onnx2c [your ONNX model file] > model.c
-```
-This command will output model.c which has an ENTRY function. The ENTRY function is used for inference.
+``` 
+This command will output model.c which has an ENTRY function. The ENTRY function is used for inference. {cite}`onnx2c`

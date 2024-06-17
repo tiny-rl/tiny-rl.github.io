@@ -347,7 +347,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="creating-a-onnx-model">
 <h1><center>Creating a ONNX model</center><a class="headerlink" href="#creating-a-onnx-model" title="Link to this heading">#</a></h1>
-<p>To continue our tiny rl journey, we will need to make this model compatible with the embedded microcontroller. This requires us to convert the PyTorch <span id="id1">[]</span> model to an ONNX <span id="id2">[]</span> model.</p>
+<p>To continue our tiny rl journey, we will need to make this model compatible with the embedded microcontroller. This requires us to convert the <a class="reference external" href="https://pytorch.org">PyTorch</a> model to an <a class="reference external" href="https://onnx.ai/">ONNX</a> model. <span id="id1">[<a class="reference internal" href="../references.html#id4" title="Onnx. https://onnx.ai/."><em>ONNX</em>, n.d.</a>]</span></p>
 <p>The conversion code looks like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">export_student_as_onnx</span><span class="p">(</span>
     <span class="s2">&quot;/path/to/model.pth&quot;</span><span class="p">,</span> 
