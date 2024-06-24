@@ -1,7 +1,7 @@
 # <center>Usage</center>
 **Arduino code**  
 The Arduino code will start a serial port on the default usb and read in observation strings. These obervation strings will be converted to an actual array and inserted into the model. An argmax will then decide which action to take based on the output of the model.   
-:::{note}
+:::{warning}
 When you have a continuous action space you need to remove the argmax!
 :::  
 :::{note}
