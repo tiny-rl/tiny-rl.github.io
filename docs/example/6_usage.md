@@ -1,8 +1,14 @@
 # <center>Usage</center>
 **Arduino code**  
-The Arduino code will start a serial port on the default usb and read in observation strings. These obervation strings will be converted to an actual array and inserted into the model. An argmax will then decide which action to take based on the output of the model. 
+The Arduino code will start a serial port on the default usb and read in observation strings. These obervation strings will be converted to an actual array and inserted into the model. An argmax will then decide which action to take based on the output of the model.   
 :::{note}
 When you have a continuous action space you need to remove the argmax!
+:::  
+:::{note}
+This is a proof of concept to show that the policy network can run on an ESP32.  
+The most important part of this piece of code is the inference which is done with **entry** function. The **entry** function takes two arguments:  
+- state: state array in the same format as you trained your agent with.
+- output: a reference to an array that is as big as raw policy network of your agent.
 :::
 
 ```c
@@ -56,7 +62,7 @@ void loop() {
         }
 
         float out[1][2];
-        entry(state,out);  
+        entry(state,out);  // Inference on neural network
         int N = sizeof(out) / sizeof(float);
 
         Serial.print(argmax(&out[0][0], &out[0][N]));
@@ -72,6 +78,13 @@ void loop() {
 The environment will be handled in python via a serial connection to the ESP32.
 
 ```python
+import time
+
+import serial
+import numpy as np
+from stable_baselines3.common.env_util import make_vec_env
+from stable_baselines3.common.vec_env.dummy_vec_env import DummyVecEnv
+
 env = make_vec_env("CartPole-v1", n_envs=1, vec_env_cls=DummyVecEnv, env_kwargs={"render_mode": "human"})
 
 rewards_list = []

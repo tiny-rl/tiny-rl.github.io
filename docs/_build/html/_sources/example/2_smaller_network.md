@@ -1,5 +1,5 @@
 # <center>Creating a smaller network</center>
-First of al we want to down size our network parameters. We can create a new smaller neural network in PyTorch {cite}`pytorch` that inherits our frameworks NetworkInterface. The NetworkInterface is necessary to be compatible with our compression framework.  
+First of al we want to down size our network parameters. We can create a new smaller neural network in [PyTorch](https://pytorch.org) that inherits our frameworks NetworkInterface. The NetworkInterface is necessary to be compatible with our compression framework.  
 
 :::{important}
 - The input layer should have the same shape as the environments observation

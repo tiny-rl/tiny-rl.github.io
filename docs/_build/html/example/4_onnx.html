@@ -347,7 +347,11 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="creating-a-onnx-model">
 <h1><center>Creating a ONNX model</center><a class="headerlink" href="#creating-a-onnx-model" title="Link to this heading">#</a></h1>
-<p>To continue our tiny rl journey, we will need to make this model compatible with the embedded microcontroller. This requires us to convert the PyTorch <span id="id1">[]</span> model to an ONNX <span id="id2">[]</span> model.</p>
+<p>To continue our tiny rl journey, we will need to make this model compatible with the embedded microcontroller. This requires us to convert the <a class="reference external" href="https://pytorch.org">PyTorch</a> model to an <a class="reference external" href="https://onnx.ai/">ONNX</a> model. This step also include a PTQ method called <a class="reference external" href="https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html#dynamic-quantization">dynamic quantization</a>. This is done to convert the weights to 8 bit integers.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Doing this step after quantize aware policy distillation can result in unwanted behavior! To prevent this, set the quantization.enabled to False in the config dict.</p>
+</div>
 <p>The conversion code looks like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">export_student_as_onnx</span><span class="p">(</span>
     <span class="s2">&quot;/path/to/model.pth&quot;</span><span class="p">,</span> 
@@ -358,7 +362,8 @@ document.write(`
     <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
     <span class="n">onnx_input_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_1&quot;</span><span class="p">],</span> 
     <span class="n">onnx_output_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;output_1&quot;</span><span class="p">],</span> 
-    <span class="n">opset_version</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+    <span class="n">opset_version</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+    <span class="n">qat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

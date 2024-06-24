@@ -347,9 +347,24 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="transfering-teacher-policy-to-student">
 <h1><center>Transfering teacher policy to student</center><a class="headerlink" href="#transfering-teacher-policy-to-student" title="Link to this heading">#</a></h1>
-<p>Now that we have our student, we can start transferring the policy to the student network. This process is called policy distillation. The distillation is also quantization aware. Quantize aware means that during the distillation, the weights of the student will be simulated as 8 bit ints.</p>
+<p>Now that we have our student, we can start transferring the policy to the student network. This process is called policy distillation. It is also possible to do the policy distillition quantize aware. Quantize aware means that during the distillation, the weights of the student will be simulated as 8 bit ints.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Doing this step after quantize aware policy distillation can result in unwanted behavior! To prevent this, set the quantization.enabled to False in the config dict.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can find a default config setup an explanation <a class="reference internal" href="3_distillation_config.html"><span class="std std-doc">here</span></a></p>
+</div>
 <p>The setup code looks like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">checkpoint</span> <span class="o">=</span> <span class="n">load_from_hub</span><span class="p">(</span><span class="n">repo_id</span><span class="o">=</span><span class="s2">&quot;sb3/dqn-CartPole-v1&quot;</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s2">&quot;dqn-CartPole-v1.zip&quot;</span><span class="p">,)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># Your config dict</span>
+<span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">get_environment</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">make_vec_env</span><span class="p">(</span><span class="s2">&quot;CartPole-v1&quot;</span><span class="p">,</span> <span class="n">n_envs</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">evaluator_config</span><span class="o">.</span><span class="n">env_workers</span><span class="p">,</span> <span class="n">vec_env_cls</span><span class="o">=</span><span class="n">DummyVecEnv</span><span class="p">)</span>
+
+<span class="n">checkpoint</span> <span class="o">=</span> <span class="s2">&quot;/path/to/dqn-CartPole-v1.zip&quot;</span>
 
 <span class="n">c</span> <span class="o">=</span> <span class="n">Config</span><span class="p">(</span><span class="n">get_environment</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
 
