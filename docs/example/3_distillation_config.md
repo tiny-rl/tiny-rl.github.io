@@ -6,7 +6,7 @@ The configuration is an object initialized with a dictionary. The config referen
 - *memory*(dict):
     - **Configuration of the memory that stores experience from teacher to pass to student.**
     - *device*(string): the device that is used to store the memory (cpu, cuda)
-    - *size*(int): size of memory in steps
+    - *size*(int): size of memory in number of cached steps.
     - *update_frequency*(int): frequency in epochs to updating the memory
     - *update_size*(int): minimum amount of steps to update the memory with.
     - *frame_stack_optimization*(bool): in case of framestacked environment there can be a optimization that only the last frame will be used for the update.
