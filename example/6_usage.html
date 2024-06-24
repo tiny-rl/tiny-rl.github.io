@@ -353,6 +353,15 @@ The Arduino code will start a serial port on the default usb and read in observa
 <p class="admonition-title">Note</p>
 <p>When you have a continuous action space you need to remove the argmax!</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a proof of concept to show that the policy network can run on an ESP32.<br />
+The most important part of this piece of code is the inference which is done with <strong>entry</strong> function. The <strong>entry</strong> function takes two arguments:</p>
+<ul class="simple">
+<li><p>state: state array in the same format as you trained your agent with.</p></li>
+<li><p>output: a reference to an array that is as big as raw policy network of your agent.</p></li>
+</ul>
+</div>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">//----------</span>
 <span class="c1">//Model code</span>
 <span class="c1">//---------- </span>
@@ -403,7 +412,7 @@ The Arduino code will start a serial port on the default usb and read in observa
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">];</span>
-<span class="w">        </span><span class="n">entry</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">out</span><span class="p">);</span><span class="w">  </span>
+<span class="w">        </span><span class="n">entry</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">out</span><span class="p">);</span><span class="w">  </span><span class="c1">// Inference on neural network</span>
 <span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
 
 <span class="w">        </span><span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">argmax</span><span class="p">(</span><span class="o">&amp;</span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">N</span><span class="p">]));</span>
@@ -417,7 +426,14 @@ The Arduino code will start a serial port on the default usb and read in observa
 </div>
 <p><strong>Python code</strong>
 The environment will be handled in python via a serial connection to the ESP32.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">make_vec_env</span><span class="p">(</span><span class="s2">&quot;CartPole-v1&quot;</span><span class="p">,</span> <span class="n">n_envs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">vec_env_cls</span><span class="o">=</span><span class="n">DummyVecEnv</span><span class="p">,</span> <span class="n">env_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;render_mode&quot;</span><span class="p">:</span> <span class="s2">&quot;human&quot;</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">import</span> <span class="nn">serial</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3.common.env_util</span> <span class="kn">import</span> <span class="n">make_vec_env</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3.common.vec_env.dummy_vec_env</span> <span class="kn">import</span> <span class="n">DummyVecEnv</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">make_vec_env</span><span class="p">(</span><span class="s2">&quot;CartPole-v1&quot;</span><span class="p">,</span> <span class="n">n_envs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">vec_env_cls</span><span class="o">=</span><span class="n">DummyVecEnv</span><span class="p">,</span> <span class="n">env_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;render_mode&quot;</span><span class="p">:</span> <span class="s2">&quot;human&quot;</span><span class="p">})</span>
 
 <span class="n">rewards_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Introduction tiny-rl &#8212; tiny-rl</title>
+    <title>tiny-rl: A tiny way of doing rl &#8212; tiny-rl</title>
   
   
   
@@ -332,7 +332,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1><center> Introduction tiny-rl </center></h1>
+    <h1><center> tiny-rl: A tiny way of doing rl </center></h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -346,11 +346,15 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="introduction-tiny-rl">
-<h1><center> Introduction tiny-rl </center><a class="headerlink" href="#introduction-tiny-rl" title="Link to this heading">#</a></h1>
-<p>Tiny-rl aims to provide an end-to-end customizable and modular compression framework <span id="id1">[<a class="reference internal" href="references.html#id2" title="Thomas Avé, Kevin Mets, Tom De Schepper, and Steven Latré. Quantization-aware policy distillation (qpd). In Deep Reinforcement Learning Workshop. Antwerp, Belgium, 2022. NeurIPS 2022. URL: https://hdl.handle.net/10067/2015640151162165141.">Avé <em>et al.</em>, 2022</a>]</span> for reinforcement learning algorithms.<br />
-End-to-end means that we start from a computer trained algorithm like a DQN trained for the Cart-Pole environment and ends with a mobile neural network compatible with an embedded device such as an ESP32. The compression framework is based on policy distillation and network quantization. This means that we will first teach a smaller neural network (the student) the policy of a bigger policy network (the teacher) and lower the precision of the weights without compromising the accuracy.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="tiny-rl-a-tiny-way-of-doing-rl">
+<h1><center> tiny-rl: A tiny way of doing rl </center><a class="headerlink" href="#tiny-rl-a-tiny-way-of-doing-rl" title="Link to this heading">#</a></h1>
+<p>Tiny-rl aims to provide an end-to-end configurable and modular compression framework <span id="id1">[<a class="reference internal" href="references.html#id2" title="Thomas Avé, Kevin Mets, Tom De Schepper, and Steven Latre. Quantization-aware policy distillation (QPD). In Deep Reinforcement Learning Workshop NeurIPS 2022. 2022. URL: https://openreview.net/forum?id=DUthafLzXr.">Avé <em>et al.</em>, 2022</a>]</span> for reinforcement learning algorithms.<br />
+End-to-end means that we start from a computer trained algorithm like a <a class="reference external" href="https://stable-baselines3.readthedocs.io/en/master/modules/dqn.html">DQN</a> trained for the <a class="reference external" href="https://gymnasium.farama.org/environments/classic_control/cart_pole/">Cart-Pole environment</a> and ends with a mobile neural network compatible with an embedded device such as an <a class="reference external" href="https://www.espressif.com/en/products/socs/esp32">ESP32</a>. The compression framework is based on knowledge distillation and network quantization. This means that we will first teach a smaller neural network (<a class="reference internal" href="example/2_smaller_network.html"><span class="std std-doc">the student</span></a>) the policy of a bigger policy network (the teacher) and lower the precision of the weights without compromising the accuracy.</p>
 <p>Tiny-rl also needs to be compatible with multiple rl frameworks. This gives the need for a modular code base. Currently only stable-baselines is supported but in the future other frameworks will follow.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The quantize aware training is in alpha. Currently it is done by using the <a class="reference external" href="https://intellabs.github.io/distiller/algo_quantization.html#dorefa">DoReFa quantizer</a> of distiller from intellabs.</p>
+</div>
 <div class="toctree-wrapper compound">
 </div>
 </section>

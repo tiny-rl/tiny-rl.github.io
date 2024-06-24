@@ -14,4 +14,4 @@ Secondly, you need to [install the library](https://github.com/kraiskil/onnx2c) 
 ```sh
 ./onnx2c [your ONNX model file] > model.c
 ``` 
-This command will output model.c which has an ENTRY function. The ENTRY function is used for inference. {cite}`onnx2c`
+This command will output model.c which has an ENTRY function. The ENTRY function is used for inference.

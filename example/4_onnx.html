@@ -347,18 +347,48 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="creating-a-onnx-model">
 <h1><center>Creating a ONNX model</center><a class="headerlink" href="#creating-a-onnx-model" title="Link to this heading">#</a></h1>
-<p>To continue our tiny rl journey, we will need to make this model compatible with the embedded microcontroller. This requires us to convert the <a class="reference external" href="https://pytorch.org">PyTorch</a> model to an <a class="reference external" href="https://onnx.ai/">ONNX</a> model. <span id="id1">[<a class="reference internal" href="../references.html#id4" title="Onnx. https://onnx.ai/."><em>ONNX</em>, n.d.</a>]</span></p>
+<p>To continue our tiny rl journey, we will need to make this model compatible with the embedded microcontroller. This requires us to convert the <a class="reference external" href="https://pytorch.org">PyTorch</a> model to an <a class="reference external" href="https://onnx.ai/">ONNX</a> model. This step also include a PTQ method called <a class="reference external" href="https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html#dynamic-quantization">dynamic quantization</a>. This is done to convert the weights to 8 bit integers.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Doing this step after quantize aware policy distillation can result in unwanted behavior! To prevent this, set the quantization.enabled to False in the config dict.</p>
+</div>
 <p>The conversion code looks like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">export_student_as_onnx</span><span class="p">(</span>
-    <span class="s2">&quot;/path/to/model.pth&quot;</span><span class="p">,</span> 
-    <span class="s2">&quot;/path/for/model.onnx&quot;</span><span class="p">,</span> 
-    <span class="n">TinyStudentDQN</span><span class="p">,</span> 
-    <span class="n">config</span><span class="p">,</span> 
-    <span class="n">get_environment</span><span class="p">,</span> 
-    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
-    <span class="n">onnx_input_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_1&quot;</span><span class="p">],</span> 
-    <span class="n">onnx_output_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;output_1&quot;</span><span class="p">],</span> 
-    <span class="n">opset_version</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">stable_baselines3.common.env_util</span> <span class="kn">import</span> <span class="n">make_vec_env</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3.common.vec_env.dummy_vec_env</span> <span class="kn">import</span> <span class="n">DummyVecEnv</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3.dqn.dqn</span> <span class="kn">import</span> <span class="n">DQN</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3.dqn.policies</span> <span class="kn">import</span> <span class="n">DQNPolicy</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">from</span> <span class="nn">qpd.networks.models.student_six_model_dqn_</span> <span class="kn">import</span> <span class="n">StudentSixModelDQN</span>
+<span class="kn">from</span> <span class="nn">run</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">qpd.config</span> <span class="kn">import</span> <span class="n">Config</span>
+<span class="kn">from</span> <span class="nn">qpd.networks.wrapper.model_wrapper</span> <span class="kn">import</span> <span class="n">ModelWrapper</span>
+
+
+<span class="k">def</span> <span class="nf">get_environment</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">make_vec_env</span><span class="p">(</span><span class="s2">&quot;CartPole-v1&quot;</span><span class="p">,</span> <span class="n">n_envs</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">evaluator_config</span><span class="o">.</span><span class="n">env_workers</span><span class="p">,</span> <span class="n">vec_env_cls</span><span class="o">=</span><span class="n">DummyVecEnv</span><span class="p">,</span> <span class="n">env_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;render_mode&quot;</span><span class="p">:</span> <span class="s2">&quot;human&quot;</span><span class="p">})</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">Config</span><span class="p">(</span><span class="n">get_environment</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">get_environment</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+<span class="n">checkpoint</span> <span class="o">=</span> <span class="s2">&quot;/path/to/dqn-CartPole-v1.zip&quot;</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">DQN</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span>
+<span class="n">teacher</span> <span class="o">=</span> <span class="n">ModelWrapper</span><span class="o">.</span><span class="n">construct_wrapper</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+
+<span class="n">c</span><span class="o">.</span><span class="n">init_env_model_based_params</span><span class="p">(</span><span class="n">teacher</span><span class="p">)</span>
+
+<span class="c1"># Loading quantized student</span>
+<span class="n">student</span> <span class="o">=</span> <span class="n">StudentSixModelDQN</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+<span class="n">student</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;/path/to/student.pth&quot;</span><span class="p">)</span>
+
+
+<span class="n">rewards_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">onnx</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">student</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">state</span><span class="p">),</span> <span class="s2">&quot;/path/to/quantized_student.onnx&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">input_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_1&quot;</span><span class="p">],</span> <span class="n">output_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;output_1&quot;</span><span class="p">],</span> <span class="n">opset_version</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">qat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
